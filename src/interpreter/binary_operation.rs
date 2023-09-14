@@ -2,87 +2,69 @@ use std::error::Error;
 
 use crate::ast;
 
-use super::{eval_term, extract_primitive_term_kind, Context};
+use super::{eval_term, Context, Value};
 
-fn binary_operation_sum(lhs: &ast::Term, rhs: &ast::Term) -> Result<ast::Term, Box<dyn Error>> {
-    match (lhs, rhs) {
-        (ast::Term::Int(l), ast::Term::Int(r)) => Ok(ast::Term::Int(ast::Integer {
-            value: l.value + r.value,
-            location: Default::default(),
-        })),
+fn binary_operation_sum(lhs_value: &Value, rhs_value: &Value) -> Result<Value, Box<dyn Error>> {
+    match (lhs_value, rhs_value) {
+        (Value::Integer(lhs), Value::Integer(rhs)) => Ok(Value::Integer(lhs + rhs)),
         _ => Err(format!(
             "Cannot call + with {} and {}",
-            extract_primitive_term_kind(lhs)?,
-            extract_primitive_term_kind(rhs)?
+            lhs_value.type_name(),
+            rhs_value.type_name()
         )
         .into()),
     }
 }
 
-fn binary_operation_sub(lhs: &ast::Term, rhs: &ast::Term) -> Result<ast::Term, Box<dyn Error>> {
-    match (lhs, rhs) {
-        (ast::Term::Int(l), ast::Term::Int(r)) => Ok(ast::Term::Int(ast::Integer {
-            value: l.value - r.value,
-            location: Default::default(),
-        })),
+fn binary_operation_sub(lhs_value: &Value, rhs_value: &Value) -> Result<Value, Box<dyn Error>> {
+    match (lhs_value, rhs_value) {
+        (Value::Integer(lhs), Value::Integer(rhs)) => Ok(Value::Integer(lhs - rhs)),
         _ => Err(format!(
             "Cannot call - with {} and {}",
-            extract_primitive_term_kind(lhs)?,
-            extract_primitive_term_kind(rhs)?
+            lhs_value.type_name(),
+            rhs_value.type_name()
         )
         .into()),
     }
 }
 
-fn binary_operation_lt(lhs: &ast::Term, rhs: &ast::Term) -> Result<ast::Term, Box<dyn Error>> {
-    match (lhs, rhs) {
-        (ast::Term::Int(l), ast::Term::Int(r)) => Ok(ast::Term::Bool(ast::Boolean {
-            value: l.value < r.value,
-            location: Default::default(),
-        })),
+fn binary_operation_lt(lhs_value: &Value, rhs_value: &Value) -> Result<Value, Box<dyn Error>> {
+    match (lhs_value, rhs_value) {
+        (Value::Integer(lhs), Value::Integer(rhs)) => Ok(Value::Boolean(lhs < rhs)),
         _ => Err(format!(
             "Cannot call < with {} and {}",
-            extract_primitive_term_kind(lhs)?,
-            extract_primitive_term_kind(rhs)?
+            lhs_value.type_name(),
+            rhs_value.type_name()
         )
         .into()),
     }
 }
 
-fn binary_operation_eq(lhs: &ast::Term, rhs: &ast::Term) -> Result<ast::Term, Box<dyn Error>> {
-    match (lhs, rhs) {
-        (ast::Term::Int(l), ast::Term::Int(r)) => Ok(ast::Term::Bool(ast::Boolean {
-            value: l.value == r.value,
-            location: Default::default(),
-        })),
+fn binary_operation_eq(lhs_value: &Value, rhs_value: &Value) -> Result<Value, Box<dyn Error>> {
+    match (lhs_value, rhs_value) {
+        (Value::Integer(lhs), Value::Integer(rhs)) => Ok(Value::Boolean(lhs == rhs)),
         _ => Err(format!(
             "Cannot call == with {} and {}",
-            extract_primitive_term_kind(lhs)?,
-            extract_primitive_term_kind(rhs)?
+            lhs_value.type_name(),
+            rhs_value.type_name()
         )
         .into()),
     }
 }
 
-fn binary_operation_or(lhs: &ast::Term, rhs: &ast::Term) -> Result<ast::Term, Box<dyn Error>> {
-    match (lhs, rhs) {
-        (ast::Term::Bool(l), ast::Term::Bool(r)) => Ok(ast::Term::Bool(ast::Boolean {
-            value: l.value || r.value,
-            location: Default::default(),
-        })),
+fn binary_operation_or(lhs_value: &Value, rhs_value: &Value) -> Result<Value, Box<dyn Error>> {
+    match (lhs_value, rhs_value) {
+        (Value::Boolean(lhs), Value::Boolean(rhs)) => Ok(Value::Boolean(*lhs || *rhs)),
         _ => Err(format!(
             "Cannot call == with {} and {}",
-            extract_primitive_term_kind(lhs)?,
-            extract_primitive_term_kind(rhs)?
+            lhs_value.type_name(),
+            rhs_value.type_name()
         )
         .into()),
     }
 }
 
-pub fn binary_operation(
-    context: &mut Context,
-    t: ast::Binary,
-) -> Result<ast::Term, Box<dyn Error>> {
+pub fn binary_operation(context: &mut Context, t: ast::Binary) -> Result<Value, Box<dyn Error>> {
     let evaled_lhs = eval_term(context, *t.lhs)?;
     let evaled_rhs = eval_term(context, *t.rhs)?;
 

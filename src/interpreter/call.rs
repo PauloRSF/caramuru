@@ -2,7 +2,7 @@ use std::error::Error;
 
 use crate::ast;
 
-use super::{eval_term, Context};
+use super::{eval_term, Context, Value};
 
 fn get_function_callee(context: &Context, term: &ast::Term) -> Result<String, Box<dyn Error>> {
     if let ast::Term::Str(ast::Str { value, .. }) = term {
@@ -10,7 +10,7 @@ fn get_function_callee(context: &Context, term: &ast::Term) -> Result<String, Bo
     }
 
     if let ast::Term::Var(ast::Variable { text, .. }) = term {
-        if let Some(ast::Term::Function(ast::Function { .. })) = context.get(text) {
+        if let Some(Value::Function(_)) = context.get(text) {
             return Ok(text.clone());
         }
     }
@@ -18,7 +18,7 @@ fn get_function_callee(context: &Context, term: &ast::Term) -> Result<String, Bo
     Err("Function callee is not valid".into())
 }
 
-pub fn call_function(context: &mut Context, t: ast::Call) -> Result<ast::Term, Box<dyn Error>> {
+pub fn call_function(context: &mut Context, t: ast::Call) -> Result<Value, Box<dyn Error>> {
     let ast::Call {
         callee, arguments, ..
     } = t;
@@ -26,7 +26,7 @@ pub fn call_function(context: &mut Context, t: ast::Call) -> Result<ast::Term, B
     let callee_name = get_function_callee(context, &callee)?;
 
     match context.get(&callee_name).cloned() {
-        Some(ast::Term::Function(ast::Function {
+        Some(Value::Function(ast::Function {
             parameters, value, ..
         })) => {
             if parameters.len() > arguments.len() {

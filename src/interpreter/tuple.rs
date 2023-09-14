@@ -2,16 +2,18 @@ use std::error::Error;
 
 use crate::ast;
 
-pub fn first(t: ast::First) -> Result<ast::Term, Box<dyn Error>> {
-    match *t.value {
-        ast::Term::Tuple(t1) => Ok(*t1.first),
+use super::{eval_term, Context, Value};
+
+pub fn first(context: &mut Context, t: ast::First) -> Result<Value, Box<dyn Error>> {
+    match eval_term(context, *t.value)? {
+        Value::Tuple(first, _) => Ok(*first),
         _ => Err("'first' called on non-tuple".into()),
     }
 }
 
-pub fn second(t: ast::Second) -> Result<ast::Term, Box<dyn Error>> {
-    match *t.value {
-        ast::Term::Tuple(t1) => Ok(*t1.second),
+pub fn second(context: &mut Context, t: ast::Second) -> Result<Value, Box<dyn Error>> {
+    match eval_term(context, *t.value)? {
+        Value::Tuple(_, second) => Ok(*second),
         _ => Err("'second' called on non-tuple".into()),
     }
 }
