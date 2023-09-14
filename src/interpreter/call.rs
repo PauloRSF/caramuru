@@ -2,7 +2,7 @@ use std::error::Error;
 
 use crate::ast;
 
-use super::{eval_term, Context, Value};
+use super::{eval_term, value::Value, Context};
 
 fn get_function_callee(context: &Context, term: &ast::Term) -> Result<String, Box<dyn Error>> {
     if let ast::Term::Str(ast::Str { value, .. }) = term {

@@ -2,7 +2,7 @@ use std::error::Error;
 
 use crate::ast;
 
-use super::{eval_term, Context, Value};
+use super::{eval_term, value::Value, Context};
 
 pub fn first(context: &Context, t: ast::First) -> Result<Value, Box<dyn Error>> {
     match eval_term(context, *t.value)? {

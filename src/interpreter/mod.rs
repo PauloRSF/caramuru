@@ -1,4 +1,4 @@
-use std::{collections::HashMap, error::Error, fmt::Display};
+use std::{collections::HashMap, error::Error};
 
 use crate::ast;
 
@@ -7,6 +7,7 @@ mod call;
 mod condition;
 mod print;
 mod tuple;
+mod value;
 mod variable;
 
 use self::{
@@ -14,41 +15,9 @@ use self::{
     call::call_function,
     condition::do_if,
     print::print,
+    value::Value,
     variable::{assign_variable, get_variable_value},
 };
-
-#[derive(Debug, Clone)]
-pub enum Value {
-    String(String),
-    Integer(u32),
-    Tuple(Box<Value>, Box<Value>),
-    Boolean(bool),
-    Function(ast::Function),
-}
-
-impl Value {
-    fn type_name(&self) -> &str {
-        match self {
-            Value::Integer(_) => "integer",
-            Value::String(_) => "string",
-            Value::Boolean(_) => "boolean",
-            Value::Tuple(..) => "tuple",
-            Value::Function(_) => "function",
-        }
-    }
-}
-
-impl Display for Value {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Value::Integer(value) => f.write_fmt(format_args!("{value}")),
-            Value::Boolean(value) => f.write_fmt(format_args!("{value}")),
-            Value::String(value) => f.write_fmt(format_args!("{value}")),
-            Value::Tuple(first, second) => f.write_fmt(format_args!("({first}, {second})")),
-            Value::Function(..) => f.write_fmt(format_args!("#function")),
-        }
-    }
-}
 
 #[derive(Clone)]
 pub struct Context {

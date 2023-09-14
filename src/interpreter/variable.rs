@@ -2,7 +2,7 @@ use std::error::Error;
 
 use crate::ast;
 
-use super::{eval_term, Context, Value};
+use super::{eval_term, value::Value, Context};
 
 pub fn get_variable_value(context: &Context, t: ast::Variable) -> Result<Value, Box<dyn Error>> {
     context

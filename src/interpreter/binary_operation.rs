@@ -2,7 +2,7 @@ use std::error::Error;
 
 use crate::ast;
 
-use super::{eval_term, Context, Value};
+use super::{eval_term, value::Value, Context};
 
 fn binary_operation_sum(lhs_value: &Value, rhs_value: &Value) -> Result<Value, Box<dyn Error>> {
     match (lhs_value, rhs_value) {
