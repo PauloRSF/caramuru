@@ -64,7 +64,7 @@ fn binary_operation_or(lhs_value: &Value, rhs_value: &Value) -> Result<Value, Bo
     }
 }
 
-pub fn binary_operation(context: &mut Context, t: ast::Binary) -> Result<Value, Box<dyn Error>> {
+pub fn binary_operation(context: &Context, t: ast::Binary) -> Result<Value, Box<dyn Error>> {
     let evaled_lhs = eval_term(context, *t.lhs)?;
     let evaled_rhs = eval_term(context, *t.rhs)?;
 

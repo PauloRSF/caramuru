@@ -66,11 +66,7 @@ impl Context {
         self.inner.get(key)
     }
 
-    pub fn setm(&mut self, key: &str, value: &Value) {
-        self.inner.insert(key.to_string(), value.clone());
-    }
-
-    pub fn set(&self, key: &str, value: &Value) -> Self {
+    pub fn add(&self, key: &str, value: &Value) -> Self {
         let mut new = self.inner.clone();
 
         new.insert(key.to_string(), value.clone());
@@ -79,7 +75,7 @@ impl Context {
     }
 }
 
-fn eval_term(context: &mut Context, term: ast::Term) -> Result<Value, Box<dyn Error>> {
+fn eval_term(context: &Context, term: ast::Term) -> Result<Value, Box<dyn Error>> {
     match term {
         ast::Term::If(t) => do_if(context, t),
         ast::Term::First(t) => tuple::first(context, t),
@@ -101,9 +97,7 @@ fn eval_term(context: &mut Context, term: ast::Term) -> Result<Value, Box<dyn Er
 }
 
 pub fn eval(ast: ast::File) -> Result<(), Box<dyn Error>> {
-    let mut context = Context::new();
-
-    eval_term(&mut context, ast.expression)?;
+    eval_term(&Context::new(), ast.expression)?;
 
     Ok(())
 }

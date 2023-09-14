@@ -18,12 +18,12 @@ fn get_function_callee(context: &Context, term: &ast::Term) -> Result<String, Bo
     Err("Function callee is not valid".into())
 }
 
-pub fn call_function(context: &mut Context, t: ast::Call) -> Result<Value, Box<dyn Error>> {
+pub fn call_function(context: &Context, t: ast::Call) -> Result<Value, Box<dyn Error>> {
     let ast::Call {
         callee, arguments, ..
     } = t;
 
-    let callee_name = get_function_callee(context, &callee)?;
+    let callee_name = get_function_callee(&context, &callee)?;
 
     match context.get(&callee_name).cloned() {
         Some(Value::Function(ast::Function {
@@ -44,14 +44,14 @@ pub fn call_function(context: &mut Context, t: ast::Call) -> Result<Value, Box<d
                 .map(|arg| eval_term(context, *arg.clone()))
                 .collect::<Result<Vec<_>, _>>()?;
 
-            let mut call_context = parameters
+            let call_context = parameters
                 .iter()
                 .zip(evaled_args.iter())
                 .fold(context.clone(), |ctx, (parameter, argument)| {
-                    ctx.set(&parameter.text, argument)
+                    ctx.add(&parameter.text, argument)
                 });
 
-            eval_term(&mut call_context, *value)
+            eval_term(&call_context, *value)
         }
         Some(_) => Err(format!("'{}' is not callable", callee_name).into()),
         _ => Err(format!("'{}' does not exist", callee_name).into()),
