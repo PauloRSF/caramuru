@@ -5,10 +5,6 @@ use crate::ast;
 use super::{eval_term, value::Value, Context};
 
 fn get_function_callee(context: &Context, term: &ast::Term) -> Result<String, Box<dyn Error>> {
-    if let ast::Term::Str(ast::Str { value, .. }) = term {
-        return Ok(value.clone());
-    }
-
     if let ast::Term::Var(ast::Variable { text, .. }) = term {
         if let Some(Value::Function(_)) = context.get(text) {
             return Ok(text.clone());
@@ -18,7 +14,7 @@ fn get_function_callee(context: &Context, term: &ast::Term) -> Result<String, Bo
     Err("Function callee is not valid".into())
 }
 
-pub fn call_function(context: &Context, t: ast::Call) -> Result<Value, Box<dyn Error>> {
+pub fn call_function(context: &Context, t: &ast::Call) -> Result<Value, Box<dyn Error>> {
     let ast::Call {
         callee, arguments, ..
     } = t;
@@ -41,7 +37,7 @@ pub fn call_function(context: &Context, t: ast::Call) -> Result<Value, Box<dyn E
 
             let evaled_args = arguments
                 .iter()
-                .map(|arg| eval_term(context, *arg.clone()))
+                .map(|arg| eval_term(context, &arg.clone()))
                 .collect::<Result<Vec<_>, _>>()?;
 
             let call_context = parameters
@@ -51,7 +47,7 @@ pub fn call_function(context: &Context, t: ast::Call) -> Result<Value, Box<dyn E
                     ctx.add(&parameter.text, argument)
                 });
 
-            eval_term(&call_context, *value)
+            eval_term(&call_context, &value)
         }
         Some(_) => Err(format!("'{}' is not callable", callee_name).into()),
         _ => Err(format!("'{}' does not exist", callee_name).into()),

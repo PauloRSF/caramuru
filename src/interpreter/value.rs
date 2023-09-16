@@ -14,11 +14,11 @@ pub enum Value {
 impl Value {
     pub fn type_name(&self) -> &str {
         match self {
-            Value::Integer(_) => "integer",
-            Value::String(_) => "string",
-            Value::Boolean(_) => "boolean",
             Value::Tuple(..) => "tuple",
-            Value::Function(_) => "function",
+            Value::String(..) => "string",
+            Value::Boolean(..) => "boolean",
+            Value::Integer(..) => "integer",
+            Value::Function(..) => "function",
         }
     }
 }

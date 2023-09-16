@@ -185,9 +185,9 @@ fn binary_operation_or(lhs_value: &Value, rhs_value: &Value) -> Result<Value, Bo
     }
 }
 
-pub fn binary_operation(context: &Context, t: ast::Binary) -> Result<Value, Box<dyn Error>> {
-    let lhs = eval_term(context, *t.lhs)?;
-    let rhs = eval_term(context, *t.rhs)?;
+pub fn binary_operation(context: &Context, t: &ast::Binary) -> Result<Value, Box<dyn Error>> {
+    let lhs = eval_term(context, &t.lhs)?;
+    let rhs = eval_term(context, &t.rhs)?;
 
     match t.op {
         ast::BinaryOperator::Add => binary_operation_sum(&lhs, &rhs),

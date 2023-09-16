@@ -44,7 +44,7 @@ impl Context {
     }
 }
 
-fn eval_term(context: &Context, term: ast::Term) -> Result<Value, Box<dyn Error>> {
+fn eval_term(context: &Context, term: &ast::Term) -> Result<Value, Box<dyn Error>> {
     match term {
         ast::Term::If(t) => do_if(context, t),
         ast::Term::First(t) => tuple::first(context, t),
@@ -55,18 +55,18 @@ fn eval_term(context: &Context, term: ast::Term) -> Result<Value, Box<dyn Error>
         ast::Term::Var(t) => get_variable_value(context, t),
         ast::Term::Binary(t) => binary_operation(context, t),
         ast::Term::Bool(t) => Ok(Value::Boolean(t.value)),
-        ast::Term::Function(t) => Ok(Value::Function(t)),
+        ast::Term::Function(t) => Ok(Value::Function(t.clone())),
         ast::Term::Int(t) => Ok(Value::Integer(t.value)),
-        ast::Term::Str(t) => Ok(Value::String(t.value)),
+        ast::Term::Str(t) => Ok(Value::String(t.value.clone())),
         ast::Term::Tuple(t) => Ok(Value::Tuple(
-            Box::new(eval_term(context, *t.first)?),
-            Box::new(eval_term(context, *t.second)?),
+            Box::new(eval_term(context, &t.first)?),
+            Box::new(eval_term(context, &t.second)?),
         )),
     }
 }
 
 pub fn eval(ast: ast::File) -> Result<(), Box<dyn Error>> {
-    eval_term(&Context::new(), ast.expression)?;
+    eval_term(&Context::new(), &ast.expression)?;
 
     Ok(())
 }
