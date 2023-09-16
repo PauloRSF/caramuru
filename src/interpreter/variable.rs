@@ -17,7 +17,7 @@ pub fn assign_variable(context: &Context, t: &ast::Let) -> Result<Value, Box<dyn
     let updated_context = context.add(&t.name.text, &value);
 
     match &t.next {
-        Some(next) => eval_term(&updated_context, &next),
+        Some(next) => eval_term(&updated_context, next),
         _ => Ok(value),
     }
 }

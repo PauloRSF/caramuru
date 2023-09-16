@@ -19,7 +19,7 @@ pub fn call_function(context: &Context, t: &ast::Call) -> Result<Value, Box<dyn 
         callee, arguments, ..
     } = t;
 
-    let callee_name = get_function_callee(&context, &callee)?;
+    let callee_name = get_function_callee(context, callee)?;
 
     match context.get(&callee_name).cloned() {
         Some(Value::Function(ast::Function {

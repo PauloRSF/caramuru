@@ -19,18 +19,12 @@ use self::{
     variable::{assign_variable, get_variable_value},
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct Context {
     inner: HashMap<String, Value>,
 }
 
 impl Context {
-    pub fn new() -> Self {
-        Self {
-            inner: HashMap::new(),
-        }
-    }
-
     pub fn get(&self, key: &str) -> Option<&Value> {
         self.inner.get(key)
     }
@@ -66,7 +60,7 @@ fn eval_term(context: &Context, term: &ast::Term) -> Result<Value, Box<dyn Error
 }
 
 pub fn eval(ast: ast::File) -> Result<(), Box<dyn Error>> {
-    eval_term(&Context::new(), &ast.expression)?;
+    eval_term(&Context::default(), &ast.expression)?;
 
     Ok(())
 }
