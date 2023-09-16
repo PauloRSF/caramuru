@@ -50,7 +50,7 @@ fn eval_term(context: &Context, term: &ast::Term) -> Result<Value, Box<dyn Error
         ast::Term::Binary(t) => binary_operation(context, t),
         ast::Term::Bool(t) => Ok(Value::Boolean(t.value)),
         ast::Term::Function(t) => Ok(Value::Function(t.clone())),
-        ast::Term::Int(t) => Ok(Value::Integer(t.value)),
+        ast::Term::Int(t) => Ok(Value::Integer(t.value.clone())),
         ast::Term::Str(t) => Ok(Value::String(t.value.clone())),
         ast::Term::Tuple(t) => Ok(Value::Tuple(
             Box::new(eval_term(context, &t.first)?),

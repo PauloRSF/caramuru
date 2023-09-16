@@ -5,7 +5,7 @@ use crate::ast;
 #[derive(Debug, Clone)]
 pub enum Value {
     String(String),
-    Integer(u32),
+    Integer(i32),
     Tuple(Box<Value>, Box<Value>),
     Boolean(bool),
     Function(ast::Function),
