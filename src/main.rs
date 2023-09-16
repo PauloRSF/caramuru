@@ -1,13 +1,11 @@
-use std::{env::args, error::Error, fs::read_to_string};
+use std::{env::args, error::Error};
 
-use caramuru::{ast::File, interpreter::eval};
+use caramuru::{interpreter::eval, parse_source};
 
 fn main() -> Result<(), Box<dyn Error>> {
-    let input = args().nth(1).ok_or("You need to provide a file name")?;
+    let source_file_path = args().nth(1).ok_or("You need to provide a file name")?;
 
-    let ast_string = read_to_string(input)?;
-
-    let file: File = serde_json::from_str(&ast_string)?;
+    let file = parse_source(&source_file_path)?;
 
     eval(file)
 }

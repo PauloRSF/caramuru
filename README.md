@@ -11,5 +11,5 @@ Minha tentativa para a [Rinha de Compiladores](https://github.com/aripiprazole/r
 ## Como executar
 
 ```sh
-cargo run <arquivo_json_da_árvore>
+cargo run <arquivo_com_codigo_fonte>
 ```
